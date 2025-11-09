@@ -1,0 +1,33 @@
+# https://github.com/cachix/devenv/blob/51b8d122089584c1c8d3574e43b6d43efe820dbc/docs/src/integrations/github-actions.md?plain=1#L128-L160
+name: "Test"
+
+on:
+  pull_request:
+  push:
+
+jobs:
+  tests:
+    strategy:
+      matrix:
+        os: [macos-15]
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
+      - uses: cachix/install-nix-action@fd24c48048070c1be9acd18c9d369a83f0fe94d7 # v31
+      - uses: cachix/cachix-action@0fc020193b5a1fa3ac4575aa3a7d3aa6a35435ad # v16
+        with:
+          name: devenv
+      - name: Install devenv.sh
+        run: nix profile install nixpkgs#devenv
+
+      - name: Build the devenv shell and run any pre-commit hooks
+        run: devenv test
+
+      - name: Run a single command in the devenv shell
+        run: devenv shell hello
+      # https://github.com/Homebrew/actions/blob/6608395265063b0b4534ee5672930fa31cd45f94/setup-homebrew/README.md?plain=1#L10-L12
+      - name: Set up Homebrew
+        id: set-up-homebrew
+        uses: Homebrew/actions/setup-homebrew@6608395265063b0b4534ee5672930fa31cd45f94 # main
+      - run: brew install spam
