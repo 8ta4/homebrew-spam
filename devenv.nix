@@ -16,6 +16,7 @@
     pkgs.gitleaks
     pkgs.python313Packages.pre-commit-hooks
     pkgs.rubyPackages.rubocop
+    pkgs.rubyPackages.solargraph
   ];
 
   # https://devenv.sh/languages/
